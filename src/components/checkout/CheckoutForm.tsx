@@ -290,7 +290,7 @@ export function CheckoutForm({
                   <div className="flex-1 pr-3">
                     <p className="font-medium text-brand-dark">{item.productTitle}</p>
                     <p className="text-xs text-brand-neutral">
-                      {item.variantLabel} × {item.quantity}
+                      {item.variantSize}{item.lavenderIncluded ? " + Lavendel" : ""} × {item.quantity}
                     </p>
                   </div>
                   <span className="tabular-nums text-brand-dark">

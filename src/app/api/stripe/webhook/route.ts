@@ -143,7 +143,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
       items: updatedOrder.items.map((item) => ({
         quantity: item.quantity,
         unitCents: item.unitCents,
-        variant: { label: item.variant.label },
+        variant: { size: item.variant.size, lavenderIncluded: item.variant.lavenderIncluded },
         productTitle: item.variant.product.title,
       })),
     });

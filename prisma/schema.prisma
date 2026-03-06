@@ -29,6 +29,18 @@ enum OrderStatus {
 
 // ─── Models ─────────────────────────────────────────────────────────────────
 
+model Category {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@map("categories")
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -50,9 +62,11 @@ model Product {
   title       String
   description String?
   active      Boolean  @default(true)
+  categoryId  String?  @map("category_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  category Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   variants ProductVariant[]
   images   ProductImage[]
   reviews  Review[]
@@ -61,14 +75,15 @@ model Product {
 }
 
 model ProductVariant {
-  id         String   @id @default(cuid())
-  productId  String   @map("product_id")
-  label      String // e.g. "35 × 50 cm"
-  priceCents Int      @map("price_cents")
-  stock      Int      @default(0)
-  sku        String?  @unique
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  id               String   @id @default(cuid())
+  productId        String   @map("product_id")
+  size             String // e.g. "40 × 80 cm"
+  lavenderIncluded Boolean  @default(false) @map("lavender_included")
+  priceCents       Int      @map("price_cents")
+  stock            Int      @default(0)
+  sku              String?  @unique
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]

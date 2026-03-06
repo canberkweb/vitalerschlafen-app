@@ -20,6 +20,7 @@ export const getProductBySlug = cache(async (slug: string) => {
   return db.product.findUnique({
     where: { slug, active: true },
     include: {
+      category: true,
       variants: { orderBy: { priceCents: "asc" } },
       images: { orderBy: { sortOrder: "asc" } },
     },
@@ -34,10 +35,11 @@ export const getActiveProducts = cache(async () => {
   return db.product.findMany({
     where: { active: true },
     include: {
+      category: true,
       variants: { orderBy: { priceCents: "asc" }, take: 1 },
       images: { orderBy: { sortOrder: "asc" }, take: 1 },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { title: "asc" },
   });
 });
 
@@ -57,8 +59,38 @@ export const getProductVariants = cache(async (productId: string) => {
 export const getAllProductsAdmin = cache(async () => {
   return db.product.findMany({
     include: {
+      category: true,
       variants: { orderBy: { priceCents: "asc" } },
     },
     orderBy: { title: "asc" },
   });
+});
+
+/**
+ * Get all active products in a category.
+ */
+export const getProductsByCategory = cache(async (categorySlug: string) => {
+  return db.product.findMany({
+    where: { active: true, category: { slug: categorySlug } },
+    include: {
+      category: true,
+      variants: { orderBy: { priceCents: "asc" } },
+      images: { orderBy: { sortOrder: "asc" }, take: 1 },
+    },
+    orderBy: { title: "asc" },
+  });
+});
+
+/**
+ * Get a category by slug.
+ */
+export const getCategoryBySlug = cache(async (slug: string) => {
+  return db.category.findUnique({ where: { slug } });
+});
+
+/**
+ * Get all categories.
+ */
+export const getAllCategories = cache(async () => {
+  return db.category.findMany({ orderBy: { name: "asc" } });
 });

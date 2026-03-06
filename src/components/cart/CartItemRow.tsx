@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
@@ -18,6 +19,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
   const [quantity, setQuantity] = useState(item.quantity);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const lineTotal = item.priceCents * quantity;
   const outOfStock = item.stock <= 0;
@@ -33,12 +35,14 @@ export function CartItemRow({ item }: CartItemRowProps) {
       const result = await updateCartItemAction(item.variantId, newQty);
       if (result.message) setMessage(result.message);
       if (!result.success) setQuantity(item.quantity);
+      router.refresh();
     });
   }
 
   function handleRemove() {
     startTransition(async () => {
       await removeCartItemAction(item.variantId);
+      router.refresh();
     });
   }
 
@@ -85,7 +89,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
           >
             {item.productTitle}
           </Link>
-          <p className="mt-0.5 text-xs text-brand-neutral">{item.variantLabel}</p>
+          <p className="mt-0.5 text-xs text-brand-neutral">{item.variantSize}{item.lavenderIncluded ? " + Lavendel" : ""}</p>
 
           {/* Stock warning */}
           {(item.clamped || outOfStock) && (

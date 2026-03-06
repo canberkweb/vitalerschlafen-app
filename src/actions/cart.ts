@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import {
   addItem,
   updateItem,
@@ -57,4 +58,14 @@ export async function clearCartAction(): Promise<CartActionResult> {
   revalidatePath("/cart");
   revalidatePath("/", "layout");
   return { success: true };
+}
+
+/**
+ * Clear the cart and redirect back to /cart.
+ * Used via <form action={…}> for reliable cookie + navigation handling.
+ */
+export async function clearCartAndRedirectAction(): Promise<never> {
+  await clearCart();
+  revalidatePath("/", "layout");
+  redirect("/cart");
 }

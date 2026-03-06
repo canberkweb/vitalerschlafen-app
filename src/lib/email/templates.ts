@@ -26,7 +26,7 @@ interface OrderConfirmationData {
   items: Array<{
     quantity: number;
     unitCents: number;
-    variant: { label: string };
+    variant: { size: string; lavenderIncluded: boolean };
     productTitle?: string;
   }>;
   invoiceNumber?: string | null;
@@ -38,7 +38,7 @@ export function orderConfirmationEmail(data: OrderConfirmationData) {
       (item) => `
         <tr>
           <td style="padding:8px 0;font-size:14px;color:#1C1C1C;border-bottom:1px solid #F0EDE8;">
-            ${item.productTitle ?? "Hirsekissen"} — ${item.variant.label} × ${item.quantity}
+            ${item.productTitle ?? "Kissen"} — ${item.variant.size}${item.variant.lavenderIncluded ? " + Lavendel" : ""} × ${item.quantity}
           </td>
           <td style="padding:8px 0;font-size:14px;color:#1C1C1C;text-align:right;border-bottom:1px solid #F0EDE8;">
             ${formatCents(item.unitCents * item.quantity)}

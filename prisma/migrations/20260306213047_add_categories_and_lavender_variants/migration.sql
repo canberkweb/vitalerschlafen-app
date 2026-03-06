@@ -2,12 +2,24 @@
 CREATE TYPE "Role" AS ENUM ('CUSTOMER', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED');
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING_PAYMENT', 'PAID', 'PREPARING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED', 'MANUAL_REVIEW');
+
+-- CreateTable
+CREATE TABLE "categories" (
+    "id" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "password_hash" TEXT NOT NULL,
     "name" TEXT,
     "role" "Role" NOT NULL DEFAULT 'CUSTOMER',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -23,6 +35,7 @@ CREATE TABLE "products" (
     "title" TEXT NOT NULL,
     "description" TEXT,
     "active" BOOLEAN NOT NULL DEFAULT true,
+    "category_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -33,7 +46,8 @@ CREATE TABLE "products" (
 CREATE TABLE "product_variants" (
     "id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
-    "label" TEXT NOT NULL,
+    "size" TEXT NOT NULL,
+    "lavender_included" BOOLEAN NOT NULL DEFAULT false,
     "price_cents" INTEGER NOT NULL,
     "stock" INTEGER NOT NULL DEFAULT 0,
     "sku" TEXT,
@@ -59,9 +73,22 @@ CREATE TABLE "product_images" (
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
     "user_id" TEXT,
-    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING_PAYMENT',
+    "subtotal_cents" INTEGER NOT NULL,
+    "shipping_cents" INTEGER NOT NULL,
     "total_cents" INTEGER NOT NULL,
     "email" TEXT NOT NULL,
+    "stripe_payment_intent_id" TEXT,
+    "shipping_name" TEXT NOT NULL,
+    "shipping_address1" TEXT NOT NULL,
+    "shipping_address2" TEXT,
+    "shipping_postal_code" TEXT NOT NULL,
+    "shipping_city" TEXT NOT NULL,
+    "shipping_country" TEXT NOT NULL,
+    "tracking_number" TEXT,
+    "invoice_number" TEXT,
+    "invoice_url" TEXT,
+    "review_request_sent_at" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -86,10 +113,14 @@ CREATE TABLE "reviews" (
     "user_id" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "body" TEXT,
+    "is_approved" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "categories_slug_key" ON "categories"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -101,7 +132,16 @@ CREATE UNIQUE INDEX "products_slug_key" ON "products"("slug");
 CREATE UNIQUE INDEX "product_variants_sku_key" ON "product_variants"("sku");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "orders_stripe_payment_intent_id_key" ON "orders"("stripe_payment_intent_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "orders_invoice_number_key" ON "orders"("invoice_number");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "reviews_product_id_user_id_key" ON "reviews"("product_id", "user_id");
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_variants" ADD CONSTRAINT "product_variants_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -65,7 +65,8 @@ export async function GET(
     totalCents: order.totalCents,
     items: order.items.map((item) => ({
       productTitle: item.variant.product.title,
-      variantLabel: item.variant.label,
+      variantSize: item.variant.size,
+      lavenderIncluded: item.variant.lavenderIncluded,
       quantity: item.quantity,
       unitCents: item.unitCents,
     })),

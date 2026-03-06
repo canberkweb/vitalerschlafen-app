@@ -133,7 +133,7 @@ export default async function AdminOrdersPage() {
                       <div>
                         <span className="text-brand-dark">{item.variant.product.title}</span>
                         <span className="ml-2 text-xs text-brand-neutral">
-                          {item.variant.label} × {item.quantity}
+                          {item.variant.size} × {item.quantity}
                         </span>
                       </div>
                       <span className="tabular-nums text-brand-dark">

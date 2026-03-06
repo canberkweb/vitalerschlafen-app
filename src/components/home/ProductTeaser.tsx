@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { ArrowRight, Wheat, Ruler, Globe } from "lucide-react";
 import { formatPriceShort } from "@/lib/utils/format";
@@ -17,7 +18,7 @@ interface ProductTeaserProps {
 }
 
 const FEATURES = [
-  { icon: Wheat, text: "100\u00A0% biologische Goldhirse" },
+  { icon: Wheat, text: "100\u00A0% Bio Hirsenschalen" },
   { icon: Ruler, text: "3 Größen verfügbar" },
   { icon: Globe, text: "EU-weiter Versand" },
 ] as const;
@@ -36,15 +37,22 @@ export function ProductTeaser({ product, lowestPrice }: ProductTeaserProps) {
             className="group relative aspect-square overflow-hidden rounded-3xl bg-gradient-to-br from-brand-bg to-brand-bg-white shadow-sm ring-1 ring-brand-neutral-light/10"
           >
             {product.images[0] ? (
-              <img
+              <Image
                 src={product.images[0].url}
                 alt={product.images[0].alt ?? product.title}
+                width={600}
+                height={600}
                 className="h-full w-full object-contain p-10 transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-brand-neutral-light">
-                Bild folgt
-              </div>
+              <Image
+                src="/images/placeholder-product.svg"
+                alt="Produktbild folgt"
+                width={600}
+                height={600}
+                className="h-full w-full object-contain p-10 opacity-40"
+              />
             )}
           </motion.div>
 

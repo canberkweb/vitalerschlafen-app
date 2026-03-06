@@ -79,6 +79,11 @@ export default async function AdminProductsPage() {
                 {product.title}
               </h2>
               <p className="mt-0.5 text-xs text-brand-neutral">
+                {product.category && (
+                  <span className="mr-2 inline-flex items-center rounded-md bg-brand-gold/10 px-2 py-0.5 text-[10px] font-semibold text-brand-gold-dark">
+                    {product.category.name}
+                  </span>
+                )}
                 Slug: {product.slug} · {product.variants.length} Variante
                 {product.variants.length !== 1 && "n"}
               </p>
@@ -89,7 +94,7 @@ export default async function AdminProductsPage() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="border-b border-brand-neutral-light/15 text-xs font-medium uppercase tracking-wider text-brand-neutral">
-                      <th className="pb-3 pr-4 pt-4">Größe</th>
+                      <th className="pb-3 pr-4 pt-4">Größe / Variante</th>
                       <th className="pb-3 pr-4 pt-4">SKU</th>
                       <th className="pb-3 pr-4 pt-4">Preis</th>
                       <th className="pb-3 pt-4">Bestand</th>
@@ -101,7 +106,8 @@ export default async function AdminProductsPage() {
                         key={v.id}
                         variant={{
                           id: v.id,
-                          label: v.label,
+                          size: v.size,
+                          lavenderIncluded: v.lavenderIncluded,
                           sku: v.sku,
                           priceCents: v.priceCents,
                           stock: v.stock,

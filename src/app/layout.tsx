@@ -29,12 +29,41 @@ export const metadata: Metadata = {
     "Naturkissen",
     "Schlafkomfort",
     "Vitalerschlafen",
+    "Hirsekissen kaufen",
+    "Bio Hirsenschalen Kissen",
+    "ergonomisches Kissen",
+    "handgefertigt Deutschland",
   ],
   metadataBase: new URL("https://vitalerschlafen.de"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "de_DE",
     siteName: "Vitalerschlafen",
+    title: "Vitalerschlafen — Premium Hirsekissen aus Deutschland",
+    description:
+      "Handgefertigte Hirsekissen aus 100% Bio Hirsenschalen. Natürlich besser schlafen.",
+    url: "https://vitalerschlafen.de",
+    images: [
+      {
+        url: "/images/og-default.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Vitalerschlafen Premium Hirsekissen",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vitalerschlafen — Premium Hirsekissen aus Deutschland",
+    description:
+      "Handgefertigte Hirsekissen aus 100% Bio Hirsenschalen.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils/cn";
 
 interface Variant {
   id: string;
-  label: string;
+  size: string;
+  lavenderIncluded: boolean;
   sku: string | null;
   priceCents: number;
   stock: number;
@@ -27,7 +28,7 @@ export function StockEditorRow({ variant }: StockEditorRowProps) {
 
   return (
     <tr className="border-b border-brand-neutral-light/10 last:border-0 transition-colors hover:bg-brand-bg/30">
-      <td className="py-3.5 pr-4 text-sm font-medium text-brand-dark">{variant.label}</td>
+      <td className="py-3.5 pr-4 text-sm font-medium text-brand-dark">{variant.size}{variant.lavenderIncluded ? " + Lavendel" : ""}</td>
       <td className="py-3.5 pr-4 font-mono text-xs text-brand-neutral">
         {variant.sku ?? "–"}
       </td>

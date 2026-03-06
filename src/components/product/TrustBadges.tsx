@@ -7,7 +7,7 @@ const BADGES = [
   {
     icon: Wheat,
     title: "100% Hirsefüllung",
-    text: "Biologische Goldhirse aus kontrolliertem Anbau",
+    text: "Bio Hirsenschalen aus kontrolliertem Anbau",
   },
   {
     icon: Award,

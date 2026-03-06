@@ -28,74 +28,142 @@ async function main() {
   });
   console.log(`  ✔ Admin: ${admin.email} (${admin.role})`);
 
-  // ── Product: Hirsekissen ────────────────────────────────────────────────
-  const product = await prisma.product.upsert({
-    where: { slug: "hirsekissen" },
+  // ── Categories ──────────────────────────────────────────────────────────
+  const kissen = await prisma.category.upsert({
+    where: { slug: "kissen" },
     update: {},
-    create: {
-      slug: "hirsekissen",
-      title: "Vitalerschlafen Hirsekissen",
-      description:
-        "Premium-Hirsekissen für erholsamen Schlaf – gefüllt mit 100 % biologischer Goldhirse.",
-      active: true,
-    },
+    create: { slug: "kissen", name: "Kissen" },
   });
+  console.log(`  ✔ Category: ${kissen.name}`);
 
-  console.log(`  ✔ Product: ${product.title} (${product.id})`);
+  const matratzen = await prisma.category.upsert({
+    where: { slug: "matratzen" },
+    update: {},
+    create: { slug: "matratzen", name: "Matratzen" },
+  });
+  console.log(`  ✔ Category: ${matratzen.name}`);
 
-  // ── Variants ────────────────────────────────────────────────────────────
-  const variants = [
-    { label: "35 × 50 cm", priceCents: 9900, stock: 50, sku: "HK-35x50" },
-    { label: "40 × 60 cm", priceCents: 12900, stock: 50, sku: "HK-40x60" },
-    { label: "40 × 80 cm", priceCents: 14900, stock: 50, sku: "HK-40x80" },
-  ];
+  // ── Products ────────────────────────────────────────────────────────────
 
-  for (const v of variants) {
-    const variant = await prisma.productVariant.upsert({
-      where: { sku: v.sku },
-      update: {},
-      create: {
-        productId: product.id,
-        label: v.label,
-        priceCents: v.priceCents,
-        stock: v.stock,
-        sku: v.sku,
-      },
-    });
-    console.log(`  ✔ Variant: ${variant.label} — ${variant.priceCents} ct`);
+  interface ProductDef {
+    slug: string;
+    title: string;
+    description: string;
+    size: string;
+    basePriceCents: number;
+    skuPrefix: string;
+    image: string;
   }
 
-  // ── Product Images (placeholders) ──────────────────────────────────────
-  const existingImages = await prisma.productImage.count({
-    where: { productId: product.id },
-  });
+  const products: ProductDef[] = [
+    {
+      slug: "pharao-original",
+      title: "Pharao Original",
+      description:
+        "Das Pharao Original Hirsekissen — 40 × 80 cm, gefüllt mit 100 % Bio Hirsenschalen für erholsamen, natürlichen Schlaf.",
+      size: "40 × 80 cm",
+      basePriceCents: 14900,
+      skuPrefix: "PH-ORIG",
+      image: "/images/pharao.png",
+    },
+    {
+      slug: "pharao-2-merino-wolle",
+      title: "Pharao 2.0 Merino Wolle",
+      description:
+        "Das Pharao 2.0 Merino Wolle Kissen — 40 × 80 cm, mit Bio Hirsenschalen und edler Merino-Wolle für maximalen Komfort.",
+      size: "40 × 80 cm",
+      basePriceCents: 19900,
+      skuPrefix: "PH-MER",
+      image: "/images/pharaomerino.png",
+    },
+    {
+      slug: "kleopatra-original",
+      title: "Kleopatra Original",
+      description:
+        "Das Kleopatra Original Hirsekissen — 40 × 60 cm, gefüllt mit 100 % Bio Hirsenschalen. Kompakt und komfortabel.",
+      size: "40 × 60 cm",
+      basePriceCents: 12900,
+      skuPrefix: "KL-ORIG",
+      image: "/images/kleopatra.png",
+    },
+    {
+      slug: "kleopatra-2-merino-wolle",
+      title: "Kleopatra 2.0 Merino Wolle",
+      description:
+        "Das Kleopatra 2.0 Merino Wolle Kissen — 40 × 60 cm, mit Bio Hirsenschalen und edler Merino-Wolle. Premium-Schlaf im kompakten Format.",
+      size: "40 × 60 cm",
+      basePriceCents: 17900,
+      skuPrefix: "KL-MER",
+      image: "/images/kleopatramerino.png",
+    },
+  ];
 
-  if (existingImages === 0) {
-    await prisma.productImage.createMany({
-      data: [
-        {
-          productId: product.id,
-          url: "/images/placeholder-1.jpg",
-          alt: "Hirsekissen Ansicht 1",
-          sortOrder: 0,
-        },
-        {
-          productId: product.id,
-          url: "/images/placeholder-2.jpg",
-          alt: "Hirsekissen Ansicht 2",
-          sortOrder: 1,
-        },
-        {
-          productId: product.id,
-          url: "/images/placeholder-3.jpg",
-          alt: "Hirsekissen Ansicht 3",
-          sortOrder: 2,
-        },
-      ],
+  const LAVENDER_SURCHARGE_CENTS = 1000; // +10 €
+
+  for (const def of products) {
+    const product = await prisma.product.upsert({
+      where: { slug: def.slug },
+      update: {
+        title: def.title,
+        description: def.description,
+        categoryId: kissen.id,
+      },
+      create: {
+        slug: def.slug,
+        title: def.title,
+        description: def.description,
+        active: true,
+        categoryId: kissen.id,
+      },
     });
-    console.log("  ✔ 3 placeholder images created");
-  } else {
-    console.log(`  ⏭ ${existingImages} images already exist — skipped`);
+    console.log(`  ✔ Product: ${product.title} (${product.slug})`);
+
+    // ── Variants: ohne / mit Lavendel ─────────────────────────────────
+    const variantDefs = [
+      {
+        size: def.size,
+        lavenderIncluded: false,
+        priceCents: def.basePriceCents,
+        sku: `${def.skuPrefix}-40`,
+        stock: 50,
+      },
+      {
+        size: def.size,
+        lavenderIncluded: true,
+        priceCents: def.basePriceCents + LAVENDER_SURCHARGE_CENTS,
+        sku: `${def.skuPrefix}-40-LAV`,
+        stock: 30,
+      },
+    ];
+
+    for (const v of variantDefs) {
+      const variant = await prisma.productVariant.upsert({
+        where: { sku: v.sku },
+        update: { priceCents: v.priceCents, lavenderIncluded: v.lavenderIncluded },
+        create: {
+          productId: product.id,
+          size: v.size,
+          lavenderIncluded: v.lavenderIncluded,
+          priceCents: v.priceCents,
+          stock: v.stock,
+          sku: v.sku,
+        },
+      });
+      const lav = variant.lavenderIncluded ? " + Lavendel" : "";
+      console.log(`    ↳ ${variant.size}${lav}  ${variant.priceCents} ct  [${v.sku}]`);
+    }
+
+    // ── Product image (replace old placeholders) ──────────────────────
+    await prisma.productImage.deleteMany({ where: { productId: product.id } });
+    await prisma.productImage.create({
+      data: {
+        productId: product.id,
+        url: def.image,
+        alt: `${def.title} — Produktbild`,
+        sortOrder: 0,
+      },
+    });
+    console.log(`    ↳ Image: ${def.image}`);
   }
 
   console.log("✅ Seed complete.");

@@ -111,7 +111,7 @@ export default async function OrderDetailPage({ params }: Props) {
                       {item.variant.product.title}
                     </Link>
                     <span className="ml-2 text-xs text-brand-neutral">
-                      {item.variant.label} x {item.quantity}
+                      {item.variant.size} x {item.quantity}
                     </span>
                   </div>
                   <span className="tabular-nums text-brand-dark">

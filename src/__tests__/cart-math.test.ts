@@ -1,4 +1,4 @@
-import { describe, it, expect } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 // ─── Pure cart math / validation tests (no DB, no cookies) ──────────────────

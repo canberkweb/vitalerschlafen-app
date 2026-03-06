@@ -115,7 +115,7 @@ export async function createCheckoutAction(formData: FormData): Promise<Checkout
     }
     if (variant.stock < cartItem.quantity) {
       stockErrors.push(
-        `„${variant.label}" — nur noch ${variant.stock} Stück verfügbar (${cartItem.quantity} gewünscht).`,
+      `„${variant.size}${variant.lavenderIncluded ? " + Lavendel" : ""}“ — nur noch ${variant.stock} Stück verfügbar (${cartItem.quantity} gewünscht).`,
       );
       continue;
     }

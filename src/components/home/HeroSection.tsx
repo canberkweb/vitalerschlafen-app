@@ -11,7 +11,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ lowestPrice }: HeroSectionProps) {
   return (
-    <section className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden bg-brand-bg px-6 py-32 text-center">
+    <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-brand-bg px-4 py-20 text-center sm:min-h-[85vh] sm:px-6 sm:py-32">
       {/* Subtle radial gradient bg */}
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
@@ -34,7 +34,7 @@ export function HeroSection({ lowestPrice }: HeroSectionProps) {
         initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.9, delay: 0.2 }}
-        className="relative mx-auto max-w-2xl font-heading text-5xl font-semibold leading-[1.1] tracking-tight text-brand-dark md:text-6xl lg:text-7xl"
+        className="relative mx-auto max-w-2xl font-heading text-4xl font-semibold leading-[1.1] tracking-tight text-brand-dark sm:text-5xl md:text-6xl lg:text-7xl"
       >
         Schlafen Sie
         <br />
@@ -50,7 +50,7 @@ export function HeroSection({ lowestPrice }: HeroSectionProps) {
         transition={{ duration: 0.8, delay: 0.4 }}
         className="relative mx-auto mt-7 max-w-md text-lg leading-relaxed text-brand-neutral"
       >
-        Premium Hirsekissen aus 100&nbsp;% biologischer Goldhirse —
+        Premium Hirsekissen aus 100&nbsp;% Bio Hirsenschalen —
         für erholsamen, natürlichen Schlaf.
       </motion.p>
 
@@ -61,7 +61,7 @@ export function HeroSection({ lowestPrice }: HeroSectionProps) {
         className="relative mt-10 flex items-center gap-5"
       >
         <Link
-          href="/product/hirsekissen"
+          href="/category/kissen"
           className="group flex items-center gap-2 rounded-xl bg-brand-dark px-7 py-3.5 text-sm font-medium text-white shadow-lg shadow-brand-dark/15 transition-all duration-300 hover:bg-brand-dark-soft hover:shadow-xl hover:shadow-brand-dark/20"
         >
           Jetzt entdecken

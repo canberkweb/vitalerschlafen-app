@@ -60,7 +60,8 @@ export interface InvoiceData {
   // Items
   items: Array<{
     productTitle: string;
-    variantLabel: string;
+    variantSize: string;
+    lavenderIncluded: boolean;
     quantity: number;
     unitCents: number;
   }>;
@@ -184,7 +185,7 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Buffer> {
         .fontSize(9)
         .font("Helvetica")
         .fillColor("#1C1C1C")
-        .text(`${item.productTitle} — ${item.variantLabel}`, 50, rowY, {
+        .text(`${item.productTitle} — ${item.variantSize}${item.lavenderIncluded ? " + Lavendel" : ""}`, 50, rowY, {
           width: 240,
         })
         .text(String(item.quantity), 300, rowY, {

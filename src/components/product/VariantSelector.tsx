@@ -58,7 +58,7 @@ export function VariantSelector({
                   outOfStock && "line-through",
                 )}
               >
-                {v.label}
+                {v.size}{v.lavenderIncluded ? " + Lavendel" : ""}
               </span>
               <span
                 className={cn(

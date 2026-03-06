@@ -23,7 +23,8 @@ export interface EnrichedCartItem {
   productId: string;
   productTitle: string;
   productSlug: string;
-  variantLabel: string;
+  variantSize: string;
+  lavenderIncluded: boolean;
   priceCents: number;
   stock: number;
   quantity: number;

@@ -1,6 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -13,7 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatPrice } from "@/lib/utils/format";
-import { clearCartAction } from "@/actions/cart";
+import { clearCartAndRedirectAction } from "@/actions/cart";
 import { CartItemRow } from "@/components/cart/CartItemRow";
 import type { EnrichedCart } from "@/lib/cart/schema";
 
@@ -22,16 +21,8 @@ interface CartClientProps {
 }
 
 export function CartClient({ cart }: CartClientProps) {
-  const [isPending, startTransition] = useTransition();
-
   const isEmpty = cart.items.length === 0;
   const allOutOfStock = cart.items.every((i) => i.stock <= 0);
-
-  function handleClear() {
-    startTransition(async () => {
-      await clearCartAction();
-    });
-  }
 
   // ─── Empty state ──────────────────────────────────────────────────────
   if (isEmpty) {
@@ -52,11 +43,11 @@ export function CartClient({ cart }: CartClientProps) {
           Schlaf.
         </p>
         <Link
-          href="/product/hirsekissen"
+          href="/category/kissen"
           className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-medium text-white shadow-lg shadow-brand-dark/15 transition-all duration-200 hover:bg-brand-dark-soft hover:shadow-xl"
         >
           <ArrowLeft className="h-4 w-4" />
-          Zum Hirsekissen
+          Weiter einkaufen
         </Link>
       </motion.div>
     );
@@ -73,15 +64,15 @@ export function CartClient({ cart }: CartClientProps) {
             {cart.totalItems} {cart.totalItems === 1 ? "Artikel" : "Artikel"} im
             Warenkorb
           </p>
-          <button
-            type="button"
-            disabled={isPending}
-            onClick={handleClear}
-            className="flex items-center gap-1.5 text-xs text-brand-neutral transition-colors hover:text-red-500 disabled:opacity-40"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            Alle entfernen
-          </button>
+          <form action={clearCartAndRedirectAction}>
+            <button
+              type="submit"
+              className="flex items-center gap-1.5 text-xs text-brand-neutral transition-colors hover:text-red-500 disabled:opacity-40"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Alle entfernen
+            </button>
+          </form>
         </div>
 
         {/* Stock warning banner */}
@@ -108,7 +99,7 @@ export function CartClient({ cart }: CartClientProps) {
 
         {/* Continue shopping */}
         <Link
-          href="/product/hirsekissen"
+          href="/category/kissen"
           className="mt-4 inline-flex items-center gap-2 text-sm text-brand-neutral transition-colors hover:text-brand-dark"
         >
           <ArrowLeft className="h-3.5 w-3.5" />

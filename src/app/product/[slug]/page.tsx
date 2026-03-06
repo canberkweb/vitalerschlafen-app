@@ -84,6 +84,17 @@ export default async function ProductPage({ params }: Props) {
             Startseite
           </Link>
           <span className="text-brand-neutral-light">/</span>
+          {product.category && (
+            <>
+              <Link
+                href={`/category/${product.category.slug}`}
+                className="transition-colors hover:text-brand-dark"
+              >
+                {product.category.name}
+              </Link>
+              <span className="text-brand-neutral-light">/</span>
+            </>
+          )}
           <span className="font-medium text-brand-dark">{product.title}</span>
         </nav>
       </div>
@@ -98,10 +109,12 @@ export default async function ProductPage({ params }: Props) {
 
         <ProductDetailClient
           productTitle={product.title}
+          productDescription={product.description}
           variants={product.variants.map((v) => ({
             id: v.id,
             productId: v.productId,
-            label: v.label,
+            size: v.size,
+            lavenderIncluded: v.lavenderIncluded,
             priceCents: v.priceCents,
             stock: v.stock,
             sku: v.sku,
@@ -130,12 +143,12 @@ export default async function ProductPage({ params }: Props) {
                 <strong className="font-medium text-brand-dark">
                   Füllung:
                 </strong>{" "}
-                100&nbsp;% biologische Goldhirse aus kontrolliertem Anbau.
+                100&nbsp;% Bio Hirsenschalen aus kontrolliertem Anbau.
                 Natürlich temperaturregulierend und stützend.
               </li>
               <li>
                 <strong className="font-medium text-brand-dark">Bezug:</strong>{" "}
-                OEKO-TEX® Standard 100 zertifizierte Baumwolle. Weich, atmungsaktiv,
+                100&nbsp;% Bionassel. Weich, atmungsaktiv,
                 hautfreundlich.
               </li>
               <li>

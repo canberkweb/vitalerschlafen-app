@@ -69,10 +69,10 @@ export default async function AccountOrdersPage() {
               Noch keine Bestellungen
             </h2>
             <p className="mt-2 text-sm text-brand-neutral">
-              Entdecken Sie unser Premium-Hirsekissen.
+              Entdecken Sie unsere Premium-Schlafprodukte.
             </p>
             <Link
-              href="/product/hirsekissen"
+              href="/category/kissen"
               className="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-medium text-white shadow-lg shadow-brand-dark/15 transition hover:bg-brand-dark-soft"
             >
               Zum Shop
@@ -127,7 +127,7 @@ export default async function AccountOrdersPage() {
                             {item.variant.product.title}
                           </Link>
                           <span className="ml-2 text-xs text-brand-neutral">
-                            {item.variant.label} × {item.quantity}
+                            {item.variant.size} × {item.quantity}
                           </span>
                         </div>
                         <span className="tabular-nums text-brand-dark">
