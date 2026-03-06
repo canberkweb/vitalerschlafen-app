@@ -1,0 +1,14 @@
+import "dotenv/config";
+import { defineConfig } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: "npx tsx prisma/seed.ts",
+  },
+  // Prisma CLI (migrate, seed, studio) uses the direct connection.
+  datasource: {
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
+  },
+});

@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // Allow local images served from public/ (default) and future CDN
+    remotePatterns: [],
+  },
 };
 
 export default nextConfig;

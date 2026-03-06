@@ -1,0 +1,4 @@
+/**
+ * Domain layer — business logic, types, and validation schemas.
+ * Decoupled from UI and data access.
+ */
