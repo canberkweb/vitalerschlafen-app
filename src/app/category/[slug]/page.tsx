@@ -4,15 +4,23 @@ import type { Metadata } from "next";
 import {
   getCategoryBySlug,
   getProductsByCategory,
+  getAllCategories,
 } from "@/server/repositories/products";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SITE } from "@/config/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
+
+// ─── Static params ───────────────────────────────────────────────────────────
+
+export async function generateStaticParams() {
+  const categories = await getAllCategories();
+  return categories.map((c) => ({ slug: c.slug }));
+}
 
 // ─── Dynamic metadata ────────────────────────────────────────────────────────
 
