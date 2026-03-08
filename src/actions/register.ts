@@ -3,8 +3,9 @@
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/password";
-import { createSession } from "@/lib/auth";
+import { signIn } from "@/auth";
 import { registerSchema } from "@/lib/validations/auth";
+import { AuthError } from "next-auth";
 
 export interface RegisterState {
   error?: string;
@@ -40,17 +41,24 @@ export async function registerAction(
 
   // ── Create user ─────────────────────────────────────────────────────────
   const passwordHash = await hashPassword(password);
-  const user = await db.user.create({
+  await db.user.create({
     data: { email, name, passwordHash },
   });
 
-  // ── Create session & redirect ───────────────────────────────────────────
-  await createSession({
-    userId: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-  });
+  // ── Sign in via Auth.js & redirect ──────────────────────────────────────
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: "Konto wurde erstellt, aber Anmeldung fehlgeschlagen. Bitte melden Sie sich manuell an." };
+    }
+    throw error;
+  }
 
   redirect("/account");
 }
+

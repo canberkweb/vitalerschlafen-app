@@ -1,9 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
-import { destroySession } from "@/lib/auth";
+import { signOut } from "@/auth";
 
 export async function logoutAction(): Promise<void> {
-  await destroySession();
-  redirect("/login");
+  await signOut({ redirectTo: "/login" });
 }
